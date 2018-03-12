@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>触屏轮播图</title>
+  <style>
+    html,
+    body,
+    ul {
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      width: 100%;
+    }
+
+    .carousel {
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .carousel ul {
+      position: relative;
+      list-style: none;
+      width: 1000%;
+    }
+
+    .carousel li {
+      float: left;
+      width: 10%;
+    }
+
+    .carousel a {
+      display: block;
+      width: 100%;
+    }
+
+    .carousel img {
+      width: 100%;
+      vertical-align: middle;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- carousel 轮播图 -->
+  <div class="carousel">
+    <ul>
+      <li>
+        <a href="javascript:;">
+          <img src="./image/0.png" alt="">
+        </a>
+      </li>
+      <li>
+        <a href="javascript:;">
+          <img src="./image/1.png" alt="">
+        </a>
+      </li>
+      <li>
+        <a href="javascript:;">
+          <img src="./image/2.png" alt="">
+        </a>
+      </li>
+      <li>
+        <a href="javascript:;">
+          <img src="./image/3.png" alt="">
+        </a>
+      </li>
+      <li>
+        <a href="javascript:;">
+          <img src="./image/4.png" alt="">
+        </a>
+      </li>
+      <li>
+        <a href="javascript:;">
+          <img src="./image/5.png" alt="">
+        </a>
+      </li>
+      <li>
+        <a href="javascript:;">
+          <img src="./image/6.png" alt="">
+        </a>
+      </li>
+      <li>
+        <a href="javascript:;">
+          <img src="./image/7.png" alt="">
+        </a>
+      </li>
+    </ul>
+  </div>
+  <script>
+    // 功能: 触屏轮播图
+
+
+    // 步骤:
+
+    // 1.获取元素（carousel ul  第一个li  最后一个li）
+    var carousel = document.querySelector('.carousel');
+    var ul = document.querySelector('ul');
+    firstLi = document.querySelector("li:first-child");
+    lastLi = document.querySelector('li:last-child');
+
+    var locked = true;
+    // 2.声明变量
+    var aLi, carouselWidth, index = 0, startX, endX, timer;
+    // 3.初始化轮播图(把第一个li放在最后 把最后一个li放在第一个li前面)
+
+    function init() {
+      // 把第一个li放在最后 把最后一个li放在第一个li前面
+      ul.appendChild(firstLi.cloneNode(true));
+      ul.insertBefore(lastLi.cloneNode(true), firstLi);
+
+      // 获取li
+      aLi = document.querySelectorAll('li');
+      // 设置宽度
+      setWidth();
+
+      // 5.修正第一个显示的li
+      index--;
+      ul.style.left = carouselWidth * index + 'px';
+
+      // 让轮播图自动轮播
+      autoPlay();
+    }
+
+
+
+    // 4.用js来设置ul的宽度 和li的宽度 以此来计算出一次滑动多长距离
+    function setWidth() {
+      carouselWidth = carousel.offsetWidth;
+
+      ul.style.width = carouselWidth * aLi.length + 'px';
+
+      for (var i = 0; i < aLi.length; i++) {
+        aLi[i].style.width = carouselWidth + 'px';
+      }
+    }
+
+
+    // 6.让轮播图自动动起来
+    function autoPlay() {
+      timer = setInterval(function () {
+        index--;
+        ul.style.left = carouselWidth * index + 'px';
+        ul.style.transition = 'all 1s';
+      }, 2000)
+    }
+    // 7.动起来之后 轮播图会出现一个问题: 轮播图滑没了  需要判断索引  填补空白
+    // 7.1 给ul添加一个transitionEnd事件
+    ul.addEventListener('webkitTransitionEnd', function () {
+
+       locked = true;
+      // console.log(1);
+      // 7.2 判断索引 重置  -9  -1
+      if (index == -9) {
+        index = -1;
+      }
+      // 7.3 判断所有 重置  0   -8
+      if (index == 0) {
+        index = -8;
+      }
+      ul.style.left = carouselWidth * index + 'px';
+      // 为了让用户看不见拉的这个过程  让效果完美 因此 让transiton 为空
+      ul.style.transition = '';
+
+    })
+
+
+    // 8.用手指来控制轮播方向
+    // 8.1 先要知道 手指往哪个方向滑动
+    // 8.2 给ul添加touchstart事件
+    ul.addEventListener('touchstart', function (e) {
+
+      clearInterval(timer);
+      var touches = e.targetTouches[0];
+      startX = touches.clientX;
+    })
+    // 8.3 给ul添加touchend事件
+    ul.addEventListener('touchend', function (e) {
+
+      autoPlay();
+  
+      // 在touchstart中需要变化locked的值吗？ 不需要  原因是:只要最后的touchend的时候  变化flase就可以了
+      
+      if(locked == false) return;
+
+      locked = false;
+
+
+      var touches = e.changedTouches[0];
+      endX = touches.clientX;
+
+      // 8.4 判断滑动方向
+      if (endX - startX > 0) {
+        // 向右
+        index++;
+     
+      } else {
+        // 向左
+        index--;
+      }
+        ul.style.left = carouselWidth * index + 'px';
+        ul.style.transition = 'all 1s';
+      
+    })
+
+    // 9.加锁
+
+
+    init();
+  </script>
+</body>
+
+</html>

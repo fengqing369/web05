@@ -1,0 +1,15 @@
+clientX/Y, offsetX/Y, pageX/Y, screenX/Y,scrollTop scrollLeft,都记混了,麻烦老师有时间能讲讲,
+
+// clientX/Y 可视区的大小  不包括滚动距离
+
+// offsetX/Y 
+
+//pageX /pageY 相对于页面的 包括滚动
+
+//scrollTop  卷去的页面的高度  scrollLeft 
+
+
+https://www.cnblogs.com/deerfig/p/6432683.html
+
+老师 再讲一下 this.style.top = _top + (currentY - startY) + 'px'; this.style.left = _left + (currentX - startX) + 'px'; 这块吧 谢谢
+
